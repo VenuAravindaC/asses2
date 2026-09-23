@@ -16,7 +16,7 @@ pipeline {
                 bat 'python -m py_compile app.py'
                 
                 echo 'Waiting 15 seconds to simulate build activity...'
-                sleep time: 15, unit: 'SECONDS'
+                sleep time: 15, unit: 'SECONDSs'
                 
                 echo 'Passing milestone(1)...'
                 milestone(1)
