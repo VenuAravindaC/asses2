@@ -39,7 +39,7 @@ pipeline {
                         echo "Notification email sent successfully to ${recipient}"
                     } catch (Exception e) {
                         // Fallback workaround if your lab environment has no SMTP server
-                        echo "⚠️ SMTP Server not configured! Falling back to Echo Workaround:"
+                        echo "SMTP Server not configured! Falling back to Echo Workaround:"
                         echo "--------------------------------------------------"
                         echo "TO: ${recipient}"
                         echo "SUBJECT: ${mailSubject}"
