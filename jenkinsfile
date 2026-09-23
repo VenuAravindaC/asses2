@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Pulls code from your GitHub repository
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Compiling app.py...'
+                // Checks for syntax errors by byte-compiling the app file
+                bat 'python -m py_compile app.py'
+                
+                echo 'Waiting 15 seconds to simulate build activity...'
+                sleep time: 15, unit: 'SECONDS'
+                
+                echo 'Passing milestone(1)...'
+                milestone(1)
+            }
+        }
+
+        stage('Send Notification') {
+            steps {
+                script {
+                    // Set up the required variables
+                    def recipient = "student@vituniversity.ac.in"
+                    def mailSubject = "Build Notification: Job ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}"
+                    def mailBody = "The build finished successfully. View execution logs here: ${env.BUILD_URL}"
+                    
+                    try {
+                        // Standard Jenkins Mail step
+                        mail to: recipient,
+                             subject: mailSubject,
+                             body: mailBody
+                        echo "Notification email sent successfully to ${recipient}"
+                    } catch (Exception e) {
+                        // Fallback workaround if your lab environment has no SMTP server
+                        echo "⚠️ SMTP Server not configured! Falling back to Echo Workaround:"
+                        echo "--------------------------------------------------"
+                        echo "TO: ${recipient}"
+                        echo "SUBJECT: ${mailSubject}"
+                        echo "BODY: ${mailBody}"
+                        echo "--------------------------------------------------"
+                    }
+                }
+            }
+        }
+    }
+}
